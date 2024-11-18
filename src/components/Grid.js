@@ -1,56 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Grid.css';
+import {generateRandomHex, calculateTintAndShade} from './util'
 
 const Grid = () => {
-  const [difficulty, setDifficulty] = useState(1)
+  const [difficulty, setDifficulty] = useState(1);
   const [colors, setColors] = useState([]);
-  const [highlightColor, setHighlightColor] = useState("")
+  const [highlightColor, setHighlightColor] = useState('');
   const [highlightIndex, setHighlightIndex] = useState(null);
 
+  const [time, setTime] = useState(0); // Time in milliseconds
+  const [isRunning, setIsRunning] = useState(false);
+  const timerRef = useRef(null);
+
   useEffect(() => {
-    const baseHue = Math.floor(Math.random() * 360);
-    const baseSaturation = 70;
-    const baseLightness = Math.floor(30 + Math.random() * 70);
-
-    const shades = Array.from({ length: 16 }).fill(`hsl(${baseHue}, ${baseSaturation}%, ${baseLightness}%)`);
-
-    let offset = 0
-    let difficultyOffset = 10 +  (5 - difficulty) * 10
-    if(difficulty === 1){
-      offset = difficultyOffset 
-    } else if(difficulty === 2){
-      offset = difficultyOffset 
-    } else if (difficulty === 3){
-      offset = difficultyOffset 
-    } else if(difficulty === 4) {
-      offset = difficultyOffset 
-    } else {
-      offset = difficultyOffset 
+    // Timer logic
+    if(isRunning){
+      const startTime = Date.now() - time; // Adjust for elapsed time
+      timerRef.current = setInterval(() => {
+        setTime(Date.now() - startTime);
+      }, 10); // Update every 10ms
+    }
+    else {
+      clearInterval(timerRef.current)
     }
 
-    if(baseLightness >= 60){
-      // easy easymedium medium mediumhard hard
-      offset = offset * -1
-    }
-    
-    setHighlightColor(`hsl(${baseHue}, ${baseSaturation + offset}%, ${baseLightness }%)`)
+    return () => clearInterval(timerRef.current); // Cleanup on unmount
+  }, [isRunning]);
+
+  const resetTimer = () => {
+    clearInterval(timerRef.current);
+    setTime(0);
+    const startTime = Date.now();
+    timerRef.current = setInterval(() => {
+      setTime(Date.now() - startTime);
+    }, 10);
+  };
+
+  useEffect(() => {
+    const color = generateRandomHex()
+    const {tint, shade} = calculateTintAndShade(color, (40-difficulty)/100)
+    const shades = Array.from({ length: 16 }).fill(color);
+
     const randomIndex = Math.floor(Math.random() * 16);
-    shades[randomIndex] = `hsl(${baseHue}, ${baseSaturation + offset}%, ${baseLightness }%)`
+    shades[randomIndex] = (Math.random() > 0.5 ? shade.hex : tint.hex);
 
     setColors(shades);
     setHighlightIndex(randomIndex);
-  }, [difficulty]);
+  }, [isRunning, difficulty]);
 
   const changeDifficulty = (e) => {
-    setDifficulty(difficulty+ (e.target.id === "down" ? -1 : 1))
-  }
+    setDifficulty(difficulty + (e.target.id === 'down' ? -1 : 1));
+    // resetTimer(); // Reset timer when difficulty changes
+  };
 
   const spanClick = (e) => {
-    console.log(e.target.id == highlightIndex)
-  }
+    const isCorrect = parseInt(e.target.id) === highlightIndex;
+    console.log(isCorrect ? 'Correct!' : 'Try again!');
+    if (isCorrect) {
+      setDifficulty(difficulty+1)
+    }
+  };
+
+  const formatTime = (time) => {
+    const seconds = Math.floor(time / 1000);
+    const milliseconds = Math.floor((time % 1000) / 10);
+    return `${seconds}.${milliseconds.toString().padStart(2, '0')}s`;
+  };
 
   return (
     <div className="page-container">
+      <div className="timer">
+        Time: {formatTime(time)}
+      </div>
       <div className="grid-container">
         {colors.map((color, index) => (
           <span
@@ -59,17 +80,22 @@ const Grid = () => {
             onClick={spanClick}
             className="grid-item"
             style={{
-              backgroundColor: index === highlightIndex ? highlightColor : color,
+              backgroundColor: color
             }}
           >
-            { color}
-            {/* {index === highlightIndex ? -index : index} */}
+            {"       "}
           </span>
         ))}
-        <h1>{difficulty}</h1>
+        <h1>Difficulty: {difficulty}</h1>
+        <button id="down" onClick={()=> console.log(colors)}> colros</button>
 
-        <button id="down" onClick={changeDifficulty}> - </button>
-        <button id="up" onClick={changeDifficulty}> + </button>
+        <button id="starttimer" onClick={()=> setIsRunning(!isRunning)}> start </button>
+        <button id="down" onClick={changeDifficulty}>
+          -
+        </button>
+        <button id="up" onClick={changeDifficulty}>
+          +
+        </button>
       </div>
     </div>
   );
