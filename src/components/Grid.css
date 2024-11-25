@@ -9,9 +9,11 @@
   /* Grid styles */
   .grid-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    width: 200px;
+    grid-template-columns: repeat(4, 100px);
+    /* grid-template-columns: auto auto auto; */
+
+    gap: 5px;
+    width: 50vw;
   }
   
   .grid-item {

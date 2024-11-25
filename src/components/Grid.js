@@ -4,7 +4,7 @@ import {generateRandomHex, calculateTintAndShade} from './util'
 
 const Grid = () => {
   const [difficulty, setDifficulty] = useState(1);
-  const [colors, setColors] = useState([]);
+  const [colors, setColors] = useState(Array.from({ length: 16 }).fill('#000000'));
   const [highlightColor, setHighlightColor] = useState('');
   const [highlightIndex, setHighlightIndex] = useState(null);
 
@@ -37,20 +37,21 @@ const Grid = () => {
   };
 
   useEffect(() => {
-    const color = generateRandomHex()
-    const {tint, shade} = calculateTintAndShade(color, (40-difficulty)/100)
-    const shades = Array.from({ length: 16 }).fill(color);
-
-    const randomIndex = Math.floor(Math.random() * 16);
-    shades[randomIndex] = (Math.random() > 0.5 ? shade.hex : tint.hex);
-
-    setColors(shades);
-    setHighlightIndex(randomIndex);
+    if(isRunning){
+      const color = generateRandomHex()
+      const {tint, shade} = calculateTintAndShade(color, (40-difficulty)/100)
+      const shades = Array.from({ length: 16 }).fill(color);
+  
+      const randomIndex = Math.floor(Math.random() * 16);
+      shades[randomIndex] = (Math.random() > 0.5 ? shade.hex : tint.hex);
+  
+      setColors(shades);
+      setHighlightIndex(randomIndex);
+    }
   }, [isRunning, difficulty]);
 
   const changeDifficulty = (e) => {
     setDifficulty(difficulty + (e.target.id === 'down' ? -1 : 1));
-    // resetTimer(); // Reset timer when difficulty changes
   };
 
   const spanClick = (e) => {
@@ -69,9 +70,22 @@ const Grid = () => {
 
   return (
     <div className="page-container">
-      <div className="timer">
-        Time: {formatTime(time)}
+      <div> 
+        <h1>Difficulty: {difficulty}</h1>
+        <div className="timer">
+          Time: {formatTime(time)}
+        </div>
+        <button id="down" onClick={()=> console.log(colors)}> colros</button>
+
+        <button id="starttimer" onClick={()=> setIsRunning(!isRunning)}> start </button>
+        <button id="down" onClick={changeDifficulty}>
+          -
+        </button>
+        <button id="up" onClick={changeDifficulty}>
+          +
+        </button>
       </div>
+
       <div className="grid-container">
         {colors.map((color, index) => (
           <span
@@ -86,16 +100,6 @@ const Grid = () => {
             {"       "}
           </span>
         ))}
-        <h1>Difficulty: {difficulty}</h1>
-        <button id="down" onClick={()=> console.log(colors)}> colros</button>
-
-        <button id="starttimer" onClick={()=> setIsRunning(!isRunning)}> start </button>
-        <button id="down" onClick={changeDifficulty}>
-          -
-        </button>
-        <button id="up" onClick={changeDifficulty}>
-          +
-        </button>
       </div>
     </div>
   );
