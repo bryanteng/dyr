@@ -1,14 +1,12 @@
 .App {
   text-align: center;
-  background-color: #f8f8f8;
+  background-color: rgb(113 109 109);
 }
 
 .App-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 1vh;
-  /* justify-content: center; */
   font-size: calc(10px + 2vmin);
   color: black;
 }
