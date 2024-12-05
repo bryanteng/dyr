@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Grid.css';
 import {generateRandomHex, calculateTintAndShade} from './util'
+import Modal from './Modal'
 
 const Grid = () => {
+  const [isModalVisible, setIsModalVisible] = useState(true)
+
   const [difficulty, setDifficulty] = useState(0);
   const [level, setLevel] = useState(1);
 
@@ -12,6 +15,8 @@ const Grid = () => {
   const [colors, setColors] = useState(Array.from({ length: 16 }).fill('#000000'));
   const [highlightIndex, setHighlightIndex] = useState(null);
 
+  const [flash, setFlash] = useState(false)
+  const [flashColor, setFlashColor] = useState('') // correct or wrong
   const [time, setTime] = useState(0); // Time in milliseconds
   const [isRunning, setIsRunning] = useState(false);
   const timerRef = useRef(null);
@@ -66,20 +71,32 @@ const Grid = () => {
   const spanClick = (e) => {
     const isCorrect = parseInt(e.target.id) === highlightIndex;
     console.log(isCorrect ? 'Correct!' : 'Try again!');
+    if(!isRunning) return
     if (isCorrect) {
       setDifficulty(difficulty+2)
       // scoring calculation criteria
       // fast -> track how much time it takes to get the right answer 
       // difficult -> more difficult more points
-      // tries -> wrong answer increment tries and deduct from score, could deduct points immediately?
+      // tries -> wrong answer deduct points immediately? gain less from a correct answer if more tries?
       setScore(score + (100 * (1 - tries/10) ))
       setTries(0)
       setLevel(level + 1)
+      handleFlash('correct')
      // check for game end round (15) and end the game, maybe show leaderboard?
     } else {
       setTries(tries+1)
-      // setScore(score - 10)
+      handleFlash('wrong')
+      setScore(score - 10)
     }
+  };
+
+  const handleFlash = (color) => {
+    setFlash(true);
+    setFlashColor(color)
+    setTimeout(() => {
+      setFlash(false)
+      setFlashColor('')
+    }, 400); // Flash for 500ms
   };
 
   const formatTime = (time) => {
@@ -102,23 +119,20 @@ const Grid = () => {
 
   return (
     <div className="page-container">
+        <div className='page-header'> 
+          <span> DYR </span>
+        </div>
       <div> 
+
         <h1>Level: {level} Difficulty: {difficulty}</h1>
-        <h1>score: {score}</h1>
+        <h1>score: <span className={`scoreSpan ${flash ? (flashColor ? flashColor : '' ) : ''}`}>{score}</span></h1>
 
         <div className="timer">
           Time: {formatTime(time)}
         </div>
-        <button id="down" onClick={()=> console.log(colors)}> colros</button>
+        <button id="log colors" onClick={()=> console.log(colors)}> colros</button>
 
         <button id="resettimer" onClick={resetTimer}> reset </button>
-
-        <button id="down" onClick={changeDifficulty}>
-          -
-        </button>
-        <button id="up" onClick={changeDifficulty}>
-          +
-        </button>
       </div>
 
       <div className="grid-container">
@@ -135,7 +149,8 @@ const Grid = () => {
             {"       "}
           </span>
         ))}
-        <button id="starttimer" className="startButton" onClick={startGame}> start </button>
+        { isRunning ? null :  <button id="starttimer" className="startButton" onClick={startGame}> start </button> }
+        { isModalVisible ? <Modal setIsModalVisible={setIsModalVisible} /> : null }
       </div>
     </div>
   );

@@ -1,16 +1,14 @@
-import React, {useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import './App.css';
 import Grid from './components/Grid'
-
+import LandingPage from './containers/LandingPage'
 function App() {
+
+  const [landing, setLanding] = useState(true)
 
   return (
     <div className="App">
-      <header className="App-header">
-          DYR
-      </header>
-
-      <Grid/>
+      { landing ? <LandingPage setVisible={setLanding} /> : <Grid/> }      
     </div>
   );
 }

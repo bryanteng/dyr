@@ -1,0 +1,48 @@
+.landing-page-container{
+    display: flex;
+    /* position: relative; */
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: sans-serif;
+}
+.title{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: calc(40px + 2vmin);
+    color: black;
+    line-height: 2vmin;
+    font-weight: bold;
+}
+
+.color-square{
+    border: black 3px solid;
+    border-radius: 25px;
+    height: 10vh;
+    max-height: 100px;
+}
+
+.play-button {
+    /* border-radius: 25px;
+    background-color: rgb(39, 38, 38);
+    color: whitesmoke;
+    min-width: 40px; */
+    border: none;
+    height: 3em;
+    border-radius: 1.5em;
+    align-content: center;
+    letter-spacing: .05em;
+    font-size: 16px;
+    line-height: 28px;
+    cursor: pointer;
+    padding: 0 2em;
+    background: #000;
+    color: #fff;
+    margin: 0 10px 8px;
+    font-weight: 400;
+}

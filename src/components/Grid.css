@@ -4,6 +4,13 @@
     align-items: center;
     height: 100vh; 
     margin: 0;
+
+  }
+  .page-header{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+
   }
   
   /* Grid styles */
@@ -26,6 +33,7 @@
       font-size: 1.2em;
       width: 50px;
       height: 80px;
+      cursor: pointer;
     }
     
     .spin-animation { 
@@ -38,10 +46,27 @@
       left: 50%;
       transform: translate(-50%, -50%);
     }
-  }
-  
 
-  
+  }
+
+  .scoreSpan {
+
+  }
+
+  .correct{
+    animation-duration: 400ms;
+    animation-name: correct;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  }
+
+  .wrong{
+    animation-duration: 400ms;
+    animation-name: wrong;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  }
+
   @keyframes rotateY-anim {
     0% {
       transform: rotateY(0deg);
@@ -50,4 +75,14 @@
     100% {
       transform: rotateY(360deg);
     }
+  }
+
+  @keyframes correct {
+    from { color: green; }
+    to { color: white; }
+  }
+
+  @keyframes wrong {
+    from { color: red; }
+    to { color: white; }
   }
