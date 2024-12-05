@@ -1,0 +1,33 @@
+.mini-grid-container {
+    border: black 6px solid;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: repeat(4, 25px);
+    width: 100px;
+    height: 100px;
+    position: relative;
+    
+    .mini-grid-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      color: #fff;
+      height: 25px;
+    }
+    
+    .spin-animation { 
+      animation: rotateY-anim 1.5s ease-in;
+    }
+
+    @keyframes rotateY-anim {
+        0% {
+          transform: rotateY(0deg);
+        }
+        50% {
+            transform: rotateY(180deg);
+          }
+        100% {
+          transform: rotateY(360deg);
+        }
+      }
+}
