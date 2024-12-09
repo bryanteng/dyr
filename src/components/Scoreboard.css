@@ -1,0 +1,5 @@
+.scoreboard{
+    float: right;
+    width: 15vw;
+    grid-column: 3;
+}

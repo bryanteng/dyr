@@ -2,29 +2,52 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Grid.css';
 import {generateRandomHex, calculateTintAndShade} from './util'
 import Modal from './Modal'
+import ScoreBoard from './ScoreBoard'
+import Navbar from './Navbar';
 
 const Grid = () => {
   const [isModalVisible, setIsModalVisible] = useState(true)
 
   const [difficulty, setDifficulty] = useState(0);
-  const [level, setLevel] = useState(1);
-
+  const [level, setLevel] = useState(8);
   const [score, setScore] = useState(0)
   const [tries, setTries] = useState(0)
 
-  const [colors, setColors] = useState(Array.from({ length: 16 }).fill('#000000'));
+  const [colors, setColors] = useState([
+    "#FFFFFF",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000",
+    "#000000"
+]);
   const [highlightIndex, setHighlightIndex] = useState(null);
 
   const [flash, setFlash] = useState(false)
   const [flashColor, setFlashColor] = useState('') // correct or wrong
+
   const [time, setTime] = useState(0); // Time in milliseconds
   const [isRunning, setIsRunning] = useState(false);
   const timerRef = useRef(null);
+
+  const [roundTime, setRoundTime] = useState(0); // Time in milliseconds
+  const [rounds, setRounds] = useState([])
 
   useEffect(() => {
     // Timer logic
     if(isRunning){
       const startTime = Date.now() - time; // Adjust for elapsed time
+      setRoundTime(Date.now())
       timerRef.current = setInterval(() => {
         setTime(Date.now() - startTime);
       }, 10); // Update every 10ms
@@ -48,6 +71,12 @@ const Grid = () => {
     setLevel(1)
     setDifficulty(0)
     setIsRunning(true)
+    setRounds([])
+  }
+
+  const endGame = () => {
+    clearInterval(timerRef.current)
+    setIsRunning(false)
   }
 
   useEffect(() => {
@@ -64,24 +93,30 @@ const Grid = () => {
     }
   }, [isRunning, difficulty]);
 
-  const changeDifficulty = (e) => {
-    setDifficulty(difficulty + (e.target.id === 'down' ? -1 : 1));
-  };
-
   const spanClick = (e) => {
     const isCorrect = parseInt(e.target.id) === highlightIndex;
     console.log(isCorrect ? 'Correct!' : 'Try again!');
-    if(!isRunning) return
+    if(!isRunning) return // do nothing if game isn't running
+
     if (isCorrect) {
+      handleFlash('correct')
+      const elapsedTime = formatTime(Date.now() - roundTime )
+      const roundScore = Math.round(100 * (1 - tries/10))
+      
       setDifficulty(difficulty+2)
+      setRounds([... rounds, {time: elapsedTime, score: roundScore, tries: tries+1 }]) // eventually round should show time incrementing as round is progressing on the board
+
       // scoring calculation criteria
       // fast -> track how much time it takes to get the right answer 
       // difficult -> more difficult more points
       // tries -> wrong answer deduct points immediately? gain less from a correct answer if more tries?
-      setScore(score + (100 * (1 - tries/10) ))
+      setScore(score + roundScore)
+
+      // round "resetting"
       setTries(0)
       setLevel(level + 1)
-      handleFlash('correct')
+      setRoundTime(Date.now())
+      if(level == 15) endGame()
      // check for game end round (15) and end the game, maybe show leaderboard?
     } else {
       setTries(tries+1)
@@ -105,6 +140,7 @@ const Grid = () => {
     return `${seconds}.${milliseconds.toString().padStart(2, '0')}s`;
   };
 
+  // float right sidebar table, toggle between score and leaderboard
   // score calculation table by round 
   // round | tries  | time taken | score
   // 1     | 1      | 0.00s      | 100
@@ -118,6 +154,8 @@ const Grid = () => {
   // b     | 200
 
   return (
+    <>
+    <Navbar />
     <div className="page-container">
         <div className='page-header'> 
           <span> DYR </span>
@@ -153,6 +191,8 @@ const Grid = () => {
         { isModalVisible ? <Modal setIsModalVisible={setIsModalVisible} /> : null }
       </div>
     </div>
+    <ScoreBoard rounds={rounds} />
+    </>
   );
 };
 

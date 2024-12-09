@@ -1,19 +1,20 @@
 
 .modal-container {
-    background-color: #fff;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     height: 65vh;
-    width: 35;
+    width: 35vw;
     min-width: 450px;
-    min-height: 640px;
-    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, .2);
+    height: 640px;
+    max-width: 550px;
+    box-shadow: 0 8px 60px 0 rgb(18 17 17 / 60%);
     padding: 20px;
     justify-content: flex-start;
     border-radius: 10px;
-    
+    background: #e3e3e1;
+
     .how-to-play-section{
         justify-content: space-around;
         display: inline-flex;
@@ -42,4 +43,4 @@
             display: contents;
         }
     }
-  }
+}
