@@ -31,7 +31,7 @@ const MiniGrid = ({height, width, animate}) => {
     useEffect(() => {
         timerRef.current = setInterval(() => {
             updateHighlight()
-        }, 1500); // Update highlight every 1.5s
+        }, 500); // Update highlight every .5s
 
         return () => clearInterval(timerRef.current); 
 

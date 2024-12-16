@@ -5,11 +5,11 @@ import Modal from './Modal'
 import ScoreBoard from './ScoreBoard'
 import Navbar from './Navbar';
 
-const Grid = () => {
+const Grid = ({showNavbar, setShowNavbar}) => {
   const [isModalVisible, setIsModalVisible] = useState(true)
 
   const [difficulty, setDifficulty] = useState(0);
-  const [level, setLevel] = useState(8);
+  const [level, setLevel] = useState(0);
   const [score, setScore] = useState(0)
   const [tries, setTries] = useState(0)
 
@@ -42,6 +42,8 @@ const Grid = () => {
 
   const [roundTime, setRoundTime] = useState(0); // Time in milliseconds
   const [rounds, setRounds] = useState([])
+
+  // const clearRounds = Array.from({length: 15}).fill('').map((round,index) => {'level': index+1, 'time': 0, 'tries': 0; 'score': 0} )
 
   useEffect(() => {
     // Timer logic
@@ -155,18 +157,15 @@ const Grid = () => {
 
   return (
     <>
-    <Navbar />
+    <Navbar showNavbar={showNavbar} setShowNavbar={setShowNavbar} />
     <div className="page-container">
-        <div className='page-header'> 
-          <span> DYR </span>
-        </div>
       <div> 
 
         <h1>Level: {level} Difficulty: {difficulty}</h1>
         <h1>score: <span className={`scoreSpan ${flash ? (flashColor ? flashColor : '' ) : ''}`}>{score}</span></h1>
 
         <div className="timer">
-          Time: {formatTime(time)}
+          {formatTime(time)}
         </div>
         <button id="log colors" onClick={()=> console.log(colors)}> colros</button>
 

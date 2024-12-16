@@ -1,9 +1,17 @@
-.App {
+.app-wrapper {
+
+}
+
+.app-grid-wrapper {
   text-align: center;
   background-color: #e3e3e1;
-  min-height: 100vh;
+  height: 100vh;
   display: grid;
   grid-template-columns: 1fr 4fr 1fr;
   grid-gap: 10px;
+  font-family: monospace;
 }
 
+body {
+  overflow: hidden;
+}

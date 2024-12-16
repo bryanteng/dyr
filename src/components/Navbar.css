@@ -1,4 +1,29 @@
+.navbar-container{
+    position: relative;
+}
+
 .navbar{
     grid-column: 1;
-    width: 200px;
+    position: fixed;
+    top: 5%;
+    left: -250px; /* Hidden initially */
+    height: 95%;
+    width: 250px;
+    color: white;
+    z-index: 999;
+    overflow: hidden;
+    transition: transform 1s ease, left 1s ease;
+    border-right: grey 1px solid;
+    box-shadow: 3px 5px 5px rgba(0, 0, 0, .15);
+    border-radius: 8px;
+}
+
+.navbar.open{
+    transform: translateX(0px); 
+    left: 0; 
+}
+
+.navbar.closed{
+    transform: translateX(0);
+    left: -250px;
 }

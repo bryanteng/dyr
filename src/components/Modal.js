@@ -14,22 +14,23 @@ const Modal = ({setIsModalVisible}) => {
                 </span>
                 
                 <h3> Click on the tile with a different color </h3>
-                
-                    <li> One tile is always slightly lighter or darker than the other 15. </li>
                     <li> The tiles will change color after a correct guess. </li>
+                    <li> One tile is always slightly lighter or darker than the other 15. </li>
                 
                 <div className="scoring-rules"> 
                     <h2> Scoring </h2>
-
+                    <small> Each round can earn a maximum of 100 points. </small>
                     <h4 > Accuracy </h4>
-                        <li> One tile is always slightly lighter or darker than the other 15. </li>
-                        <li> The tiles will change color after a correct guess. </li>
+                        <li> Incorrect guesses will deduct 10 points from total possible points for the round. </li>
+                        <li> Players can have a round where enough incorrect guesses will result in a negative scoring round. </li>
                     <h4> Speed </h4>
-                        <li> One tile is always slightly lighter or darker than the other 15. </li>
-                        <li> The tiles will change color after a correct guess. </li>
-                    <h4> Deductions! </h4>
-                        <li> One tile is always slightly lighter or darker than the other 15. </li>
-                        <li> The tiles will change color after a correct guess. </li>
+                        <li> For every second, round score will take a 20% deduction </li>
+                        <li> I.E. .58s on a round with no mistakes 100 * 1.0 = 100 </li>
+                        <li> I.E. 1.2s on a round with no mistakes 100 * .8 = 80 </li>
+                    <h4> Game modes! </h4>
+                        <li> daily </li>
+                        <li> sprint easy/medium/hard </li>
+                        <li> zen </li>
                 </div>
 
             </div>

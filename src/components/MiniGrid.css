@@ -16,7 +16,7 @@
     }
     
     .spin-animation { 
-      animation: rotateY-anim 1.5s ease-in;
+      animation: rotateY-anim .5s ease-in;
     }
 
     @keyframes rotateY-anim {
