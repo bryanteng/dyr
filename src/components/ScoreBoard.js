@@ -49,7 +49,7 @@ const ScoreBoard = ({rounds}) => {
                 ))}
             </tbody>
             </table>
-                <div className="total" onClick={()=> console.log(rounds)}> total: {getTotal()}</div>
+                <div className="total" onClick={()=> console.table(rounds)}> total: {getTotal()}</div>
         </div>
     )
 }

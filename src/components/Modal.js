@@ -22,15 +22,16 @@ const Modal = ({setIsModalVisible}) => {
                     <small> Each round can earn a maximum of 100 points. </small>
                     <h4 > Accuracy </h4>
                         <li> Incorrect guesses will deduct 10 points from total possible points for the round. </li>
-                        <li> Players can have a round where enough incorrect guesses will result in a negative scoring round. </li>
+                        <li> Enough incorrect guesses can result in a negative scoring round. </li>
                     <h4> Speed </h4>
                         <li> For every second, round score will take a 20% deduction </li>
-                        <li> I.E. .58s on a round with no mistakes 100 * 1.0 = 100 </li>
-                        <li> I.E. 1.2s on a round with no mistakes 100 * .8 = 80 </li>
+                        <li> I.E. 0.58s on a round with no mistakes: 100 * 1.0 = 100 </li>
+                        <li> I.E. 1.2s on a round with no mistakes: 100 * .8 = 80 </li>
+                        <li> I.E. 3.6s on a round with 2 mistakes: 100 - 20 = 80 * .4 = 32 points for the round </li>
                     <h4> Game modes! </h4>
-                        <li> daily </li>
-                        <li> sprint easy/medium/hard </li>
-                        <li> zen </li>
+                        <li> daily - daily game </li>
+                        <li> sprint - clear 20 rounds as fast as possible </li>
+                        <li> zen - relax in this neverending game mode </li>
                 </div>
 
             </div>

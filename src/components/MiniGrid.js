@@ -62,7 +62,6 @@ const MiniGrid = ({height, width, animate}) => {
                 backgroundColor: color
                 }}
             >
-                {"       "}
             </span>
             ))}
         </div>
