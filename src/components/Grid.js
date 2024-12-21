@@ -1,18 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './Grid.css';
-import {generateRandomHex, calculateTintAndShade} from './util'
-import Modal from './Modal'
-import ScoreBoard from './ScoreBoard'
-import Navbar from './Navbar';
+import React, { useState, useEffect, useRef } from "react";
+import "./Grid.css";
+import { generateRandomHex, calculateTintAndShade, fetchDailyColors } from "./util"
+import Modal from "./Modal"
+import ScoreBoard from "./ScoreBoard"
+import Navbar from "./Navbar"
 
-const Grid = ({showNavbar, setShowNavbar}) => {
+const Grid = ({ showNavbar, setShowNavbar }) => {
   const [isModalVisible, setIsModalVisible] = useState(true)
-
   const [difficulty, setDifficulty] = useState(0);
   const [level, setLevel] = useState(0);
   const [score, setScore] = useState(0)
   const [tries, setTries] = useState(0)
 
+  const [gameMode, setGameMode] = useState("sprint") // daily sprint zen
+  const [dailyColors, setDailyColors] = useState(Array(16).fill("#000000"));
   const [colors, setColors] = useState([
     "#FFFFFF",
     "#000000",
@@ -30,11 +31,12 @@ const Grid = ({showNavbar, setShowNavbar}) => {
     "#000000",
     "#000000",
     "#000000"
-]);
+]);  
+  
   const [highlightIndex, setHighlightIndex] = useState(null);
 
   const [flash, setFlash] = useState(false)
-  const [flashColor, setFlashColor] = useState('') // correct or wrong
+  const [flashColor, setFlashColor] = useState("") // correct or wrong
 
   const [time, setTime] = useState(0); // Time in milliseconds
   const [isRunning, setIsRunning] = useState(false);
@@ -42,8 +44,6 @@ const Grid = ({showNavbar, setShowNavbar}) => {
 
   const [roundTime, setRoundTime] = useState(0); // Time in milliseconds
   const [rounds, setRounds] = useState([])
-
-  // const clearRounds = Array.from({length: 15}).fill('').map((round,index) => {'level': index+1, 'time': 0, 'tries': 0; 'score': 0} )
 
   useEffect(() => {
     // Timer logic
@@ -59,6 +59,35 @@ const Grid = ({showNavbar, setShowNavbar}) => {
     }
 
     return () => clearInterval(timerRef.current); // Cleanup on unmount
+  }, [isRunning, difficulty]);
+
+  useEffect(()=> {
+    if(dailyColors[0] === dailyColors[1] ){ // 2 dailyColors only ever equal on load hypothetically? maybe need a better failsafe? maybe 3 colors...
+      fetchDailyColors(15).then((retColors) => {
+        console.log(retColors)
+        setDailyColors(retColors);
+      });
+    }
+  })
+
+  useEffect(() => {
+    if(!isRunning) return
+
+    let color
+    if (gameMode === "daily") {
+      color = dailyColors[level-1]
+    } else if (gameMode === "sprint") {
+      color = generateRandomHex()
+    }
+
+    const {tint, shade} = calculateTintAndShade(color, (30-difficulty)/100)
+    const shades = Array.from({ length: 16 }).fill(color);
+
+    const randomIndex = Math.floor(Math.random() * 16);
+    shades[randomIndex] = (Math.random() > 0.5 ? shade.hex : tint.hex);
+
+    setColors(shades);
+    setHighlightIndex(randomIndex);
   }, [isRunning, difficulty]);
 
   const resetTimer = () => {
@@ -80,20 +109,6 @@ const Grid = ({showNavbar, setShowNavbar}) => {
     clearInterval(timerRef.current)
     setIsRunning(false)
   }
-
-  useEffect(() => {
-    if(isRunning){
-      const color = generateRandomHex()
-      const {tint, shade} = calculateTintAndShade(color, (30-difficulty)/100)
-      const shades = Array.from({ length: 16 }).fill(color);
-  
-      const randomIndex = Math.floor(Math.random() * 16);
-      shades[randomIndex] = (Math.random() > 0.5 ? shade.hex : tint.hex);
-  
-      setColors(shades);
-      setHighlightIndex(randomIndex);
-    }
-  }, [isRunning, difficulty]);
 
   const spanClick = (e) => {
     const isCorrect = parseInt(e.target.id) === highlightIndex;
@@ -168,6 +183,9 @@ const Grid = ({showNavbar, setShowNavbar}) => {
           {formatTime(time)}
         </div>
         <button id="log colors" onClick={()=> console.log(colors)}> colros</button>
+        <button id="daily" onClick={()=> setGameMode('daily')}> daily</button>
+        <button id="zen" onClick={()=> setGameMode('zen')}> zen</button>
+        <button id="sprint" onClick={()=> setGameMode('sprint')}> sprint</button>
 
         <button id="resettimer" onClick={resetTimer}> reset </button>
       </div>

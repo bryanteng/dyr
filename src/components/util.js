@@ -60,3 +60,30 @@ export function generateRandomHex() {
         },
     };
 };
+
+export async function fetchDailyColors(numYears = 15) {
+    const today = new Date();
+    const requests = [];
+  
+    for (let i = 0; i < numYears; i++) {
+      const year = today.getFullYear() - i;
+      const month = `${today.getMonth() + 1}`.padStart(2, "0")
+      const day = `${today.getDate()}`.padStart(2, "0")
+      const date = `${year}-${month}-${day}` ;
+      const url = `https://colors.zoodinkers.com/api?date=${date}`;
+      requests.push(fetch(url)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to fetch color for ${date}`);
+          }
+          return response.json();
+        })
+        .then((data) => data.hex)
+        .catch((error) => {
+          console.error(error.message);
+          return generateRandomHex(); // Default color on error
+        }));
+    }
+  
+    return Promise.all(requests);
+  }

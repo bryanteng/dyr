@@ -9,6 +9,24 @@ function App() {
   const [landing, setLanding] = useState(true)
   const [showHeader, setShowHeader] = useState(false)
   const [showNavbar, setShowNavbar] = useState(false)
+  const [today, setToday] = useState('')
+
+  useEffect(() => {
+    const options = {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    };
+    const date = new Date().toLocaleDateString('en-UK', options).split('/')
+    const day = date[0]
+    const month = date[1]
+    const year = date[2]
+    const dateString = `${year}-${month}-${day}`
+    console.log(dateString);
+    fetch(`https://colors.zoodinkers.com/api?date=${dateString}`)
+      .then(resp => resp.json())
+      .then( data => console.log(data))
+  })
 
   const toggleNavbar = () => {
     setShowNavbar(!showNavbar)
