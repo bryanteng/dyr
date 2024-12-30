@@ -10,6 +10,7 @@ function App() {
   const [showHeader, setShowHeader] = useState(false)
   const [showNavbar, setShowNavbar] = useState(false)
   const [today, setToday] = useState('')
+  const [mode, setMode] = useState('daily') // daily zen sprint
 
   useEffect(() => {
     const options = {
@@ -34,9 +35,9 @@ function App() {
 
   return (
     <div className='app-wrapper'>
-      <Header showHeader={showHeader} toggleNavbar={toggleNavbar}/> 
+      <Header showHeader={showHeader} toggleNavbar={toggleNavbar} mode={mode} setMode={setMode} /> 
       <div className="app-grid-wrapper">
-        { landing ? <LandingPage setVisible={setLanding} setShowHeader={setShowHeader} /> : <Grid showNavbar={showNavbar} setShowNavbar={setShowNavbar} /> }      
+        { landing ? <LandingPage setVisible={setLanding} setShowHeader={setShowHeader} /> : <Grid showNavbar={showNavbar} setShowNavbar={setShowNavbar} mode={mode} /> }      
       </div>
     </div>
 

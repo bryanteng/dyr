@@ -5,14 +5,13 @@ import Modal from "./Modal"
 import ScoreBoard from "./ScoreBoard"
 import Navbar from "./Navbar"
 
-const Grid = ({ showNavbar, setShowNavbar }) => {
+const Grid = ({ showNavbar, setShowNavbar, mode }) => {
   const [isModalVisible, setIsModalVisible] = useState(true)
   const [difficulty, setDifficulty] = useState(0);
   const [level, setLevel] = useState(0);
   const [score, setScore] = useState(0)
   const [tries, setTries] = useState(0)
 
-  const [gameMode, setGameMode] = useState("sprint") // daily sprint zen
   const [dailyColors, setDailyColors] = useState(Array(16).fill("#000000"));
   const [colors, setColors] = useState([
     "#FFFFFF",
@@ -48,7 +47,7 @@ const Grid = ({ showNavbar, setShowNavbar }) => {
   useEffect(() => {
     // Timer logic
     if(isRunning){
-      const startTime = Date.now() - time; // Adjust for elapsed time
+      const startTime = Date.now() - time;
       setRoundTime(Date.now())
       timerRef.current = setInterval(() => {
         setTime(Date.now() - startTime);
@@ -58,7 +57,7 @@ const Grid = ({ showNavbar, setShowNavbar }) => {
       clearInterval(timerRef.current)
     }
 
-    return () => clearInterval(timerRef.current); // Cleanup on unmount
+    return () => clearInterval(timerRef.current);
   }, [isRunning, difficulty]);
 
   useEffect(()=> {
@@ -74,9 +73,9 @@ const Grid = ({ showNavbar, setShowNavbar }) => {
     if(!isRunning) return
 
     let color
-    if (gameMode === "daily") {
+    if (mode === "daily") {
       color = dailyColors[level-1]
-    } else if (gameMode === "sprint") {
+    } else {
       color = generateRandomHex()
     }
 
@@ -88,7 +87,7 @@ const Grid = ({ showNavbar, setShowNavbar }) => {
 
     setColors(shades);
     setHighlightIndex(randomIndex);
-  }, [isRunning, difficulty]);
+  }, [isRunning, rounds.length]);
 
   const resetTimer = () => {
     clearInterval(timerRef.current);
@@ -120,8 +119,8 @@ const Grid = ({ showNavbar, setShowNavbar }) => {
       const elapsedTime = formatTime(Date.now() - roundTime )
       const roundScore = Math.round(100 * (1 - tries/10))
       
-      setDifficulty(difficulty+2)
-      setRounds([... rounds, {time: elapsedTime, score: roundScore, tries: tries+1 }]) // eventually round should show time incrementing as round is progressing on the board
+
+      setRounds([...rounds, {time: elapsedTime, score: roundScore, tries: tries+1 }]) // eventually round should show time incrementing as round is progressing on the board
 
       // scoring calculation criteria
       // fast -> track how much time it takes to get the right answer 
@@ -130,10 +129,13 @@ const Grid = ({ showNavbar, setShowNavbar }) => {
       setScore(score + roundScore)
 
       // round "resetting"
+      if(mode !== "zen"){
+        setDifficulty(difficulty+2)
+        setLevel(level + 1)
+        if(level === 15) endGame()
+      }
       setTries(0)
-      setLevel(level + 1)
       setRoundTime(Date.now())
-      if(level == 15) endGame()
      // check for game end round (15) and end the game, maybe show leaderboard?
     } else {
       setTries(tries+1)
@@ -148,7 +150,7 @@ const Grid = ({ showNavbar, setShowNavbar }) => {
     setTimeout(() => {
       setFlash(false)
       setFlashColor('')
-    }, 400); // Flash for 500ms
+    }, 400); // Flash for 400ms
   };
 
   const formatTime = (time) => {
@@ -156,19 +158,6 @@ const Grid = ({ showNavbar, setShowNavbar }) => {
     const milliseconds = Math.floor((time % 1000) / 10);
     return `${seconds}.${milliseconds.toString().padStart(2, '0')}s`;
   };
-
-  // float right sidebar table, toggle between score and leaderboard
-  // score calculation table by round 
-  // round | tries  | time taken | score
-  // 1     | 1      | 0.00s      | 100
-  // 2     | 1      | 0.00s      | 200
-  // ------------------------------------
-  //                             | 300
-
-  // Leaderboard -> only persist 3 to 10 scores in localstorage.
-  // name  | score
-  // a     | 100
-  // b     | 200
 
   return (
     <>
@@ -183,10 +172,6 @@ const Grid = ({ showNavbar, setShowNavbar }) => {
           {formatTime(time)}
         </div>
         <button id="log colors" onClick={()=> console.log(colors)}> colros</button>
-        <button id="daily" onClick={()=> setGameMode('daily')}> daily</button>
-        <button id="zen" onClick={()=> setGameMode('zen')}> zen</button>
-        <button id="sprint" onClick={()=> setGameMode('sprint')}> sprint</button>
-
         <button id="resettimer" onClick={resetTimer}> reset </button>
       </div>
 

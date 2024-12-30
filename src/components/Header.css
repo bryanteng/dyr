@@ -18,6 +18,76 @@
         text-align: center;
     }
 
+    .game-title{
+        display: flex;
+        position: relative;
+        cursor: pointer;
+        align-items: center;
+        gap: 3px;
+
+        .gamemode-dropdown{
+
+        }
+        
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        z-index: 1000;
+        min-width: auto;
+      }
+      
+      .dropdown-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        text-align: left;
+      }
+      
+      .dropdown-item:hover {
+        background-color: #f0f0f0;
+      }
+      
+      .dropdown-item.active {
+        background-color: #d4f4dd;
+        font-weight: bold;
+      }
+
+      .dropdown-toggle {
+        width: 20px;
+        height: 20px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        position: relative;
+      }
+      
+      .dropdown-toggle::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        border-style: solid;
+        border-width: 2px 2px 0 0;
+        border-color: #333;
+        transform: translate(-50%, -50%) rotate(135deg);
+        transition: transform 0.3s ease;
+      }
+      
+      .dropdown-toggle.open::before {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+      
+
     .settings-button{
         font-weight: bold;
         padding: 15px;

@@ -4,6 +4,11 @@
     grid-column: 3;
     display: grid;
 
+    overflow-y: auto;
+    scrollbar-width:none;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     .total{
 
     }
@@ -31,4 +36,8 @@ table td:first-child {
 
 table td:last-child {
     border-right: none;
+}
+
+.scoreboard::-webkit-scrollbar {
+    display: none;
 }
